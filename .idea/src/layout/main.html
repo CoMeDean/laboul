@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>打标签牛马工具</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <!-- 引入 JSZip 和 FileSaver.js 库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-panel">
+    <!-- 左上角的固定区域 -->
+    <div class="sample-preview" id="sample-preview">
+      <h2>预览图</h2>
+    </div>
+    <!-- 左下角的可滚动区域 -->
+    <div class="tags-list">
+      <h2>标签列表</h2>
+      <div class="add-tag-form">
+        <input type="text" id="tag-name-input" placeholder="输入新标签...">
+        <button id="add-tag-button">添加标签</button>
+      </div>
+      <p>子文件夹名会自动生成标签</p>
+      <div class="workspace" id="tags-container">
+        <!-- 动态插入标签 -->
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="directory-selector">
+      <button id="select-folder-btn">选择主文件夹</button>
+      <button id="save-tagged-btn">保存已打标图片</button>
+      <input type="file" id="folder-input" webkitdirectory directory style="display : none;">
+    </div>
+    <div class="workspace" id="file-list">
+      <!-- 动态插入 -->
+    </div>
+  </div>
+</div>
+
+<script src="../javascript/logic.js"></script>
+
+</body>
+</html>
