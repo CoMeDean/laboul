@@ -159,7 +159,7 @@ function createImageContainer(file, compositeKey, initialTags) {
 
     const tagsDisplay = document.createElement('div');
     tagsDisplay.className = 'image-tags-container';
-    
+
     // 不再显示文件名
     fileContainer.append(thumb, tagsDisplay);
 
@@ -183,7 +183,7 @@ function createImageContainer(file, compositeKey, initialTags) {
         e.preventDefault();
         fileContainer.classList.remove('drag-over');
         const newTagName = e.dataTransfer.getData('text/plain');
-        
+
         const currentTags = getTagsForContainer(fileContainer);
         if (!currentTags.includes(newTagName)) {
             currentTags.push(newTagName);
@@ -233,7 +233,7 @@ function renderTagsOnImage(container) {
     });
 }
 
-// --- 修改：保存功能，实现新的命名规则 ---
+// --- 修改：保存功能，实现新的命名规则和CSV导出 ---
 saveBtn.addEventListener('click', () => {
     if (typeof JSZip === 'undefined' || typeof saveAs === 'undefined') {
         alert('错误：保存功能所需的库未能加载。');
@@ -246,6 +246,7 @@ saveBtn.addEventListener('click', () => {
     }
 
     const zip = new JSZip();
+    let csvContent = "new_filename,original_filename\n"; // CSV header
 
     document.querySelectorAll('.processed-file').forEach(container => {
         const compositeKey = container.dataset.imageKey;
@@ -261,10 +262,13 @@ saveBtn.addEventListener('click', () => {
 
             // 根据碰撞情况确定文件名
             const baseFileName = isCollided ? `${hash1}+${hash2}` : hash1;
-            
+
             const originalName = file.name;
             const extension = originalName.slice(originalName.lastIndexOf('.'));
             const newFileName = `${baseFileName}${extension}`;
+
+            // Add a row to the CSV content. Quote the values to handle special characters.
+            csvContent += `"${newFileName}","${originalName.replace(/"/g, '""')}"\n`;
 
             if (tags.length > 0) {
                 tags.forEach(tagName => {
@@ -281,8 +285,11 @@ saveBtn.addEventListener('click', () => {
         return;
     }
 
+    // Add the CSV file to the root of the zip archive.
+    zip.file("filename_mapping.csv", csvContent);
+
     zip.generateAsync({ type: 'blob' })
-       .then(content => {
-           saveAs(content, 'processed_images.zip');
-       });
+        .then(content => {
+            saveAs(content, 'processed_images.zip');
+        });
 });
